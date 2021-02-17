@@ -14,32 +14,32 @@
       <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="登陆">
           <div class="item">
-            <a-input placeholder="帐户" size="large"></a-input>
+            <a-input placeholder="帐户" size="large" v-model:value="logForm.account"></a-input>
           </div>
           <div class="item">
-            <a-input placeholder="密码" size="large"></a-input>
+            <a-input placeholder="密码" size="large" v-model:value="logForm.password"></a-input>
           </div>
           <div class="item">
             <a href>忘记密码</a>
           </div>
-          <a-button type="primary">登陆</a-button>
+          <a-button type="primary" @click="l">登陆</a-button>
         </a-tab-pane>
+
         <a-tab-pane key="2" tab="注册">
           <div class="item">
-            <a-input placeholder="帐户" size="large"></a-input>
+            <a-input placeholder="帐户" size="large" v-model:value="regForm.account"></a-input>
           </div>
           <div class="item">
-            <a-input placeholder="密码" size="large"></a-input>
+            <a-input placeholder="密码" size="large" v-model:value="regForm.password"></a-input>
           </div>
           <div class="item">
             <a-input placeholder="邀请码" size="large"></a-input>
           </div>
-          <a-button type="primary">注册</a-button>
+          <a-button type="primary" @click="r">注册</a-button>
         </a-tab-pane>
       </a-tabs>
     </div>
   </div>
-  <div class="form"></div>
 </template>
 
 <script src="./index.js">
