@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 // const userModel = require('./Schemas/User.js');
 require('./Schemas/User.js');
+require('./Schemas/inviteCode');
 
 const connect = () => {
     return new Promise((resolve) => {

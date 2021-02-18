@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const getMeta = require('../helpers')
 
 const userSchema = mongoose.Schema({
-    name: String,
+    account: String,
     password: String,
 
     meta: getMeta()

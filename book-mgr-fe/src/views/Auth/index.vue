@@ -33,7 +33,7 @@
             <a-input placeholder="密码" size="large" v-model:value="regForm.password"></a-input>
           </div>
           <div class="item">
-            <a-input placeholder="邀请码" size="large"></a-input>
+            <a-input placeholder="邀请码" size="large" v-model:value="regForm.inviteCode"></a-input>
           </div>
           <a-button type="primary" @click="r">注册</a-button>
         </a-tab-pane>

@@ -1,5 +1,7 @@
 // import router from './auth'
-const router = require('./auth')
+const auth = require('./auth')
+const inviteCode = require('./invite-code')
 module.exports = (app) => {
-    app.use(router.routes())
+    app.use(auth.routes())
+    app.use(inviteCode.routes())
 }

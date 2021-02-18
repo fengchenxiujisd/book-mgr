@@ -1,15 +1,18 @@
 // import { Router } from '@koa/router'
 const Router = require('@koa/router')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const { getBody } = require('../../helpers/utils');
 
 const User = mongoose.model('user')
+const InviteCode = mongoose.model('inviteCode')
 
 const router = new Router({
     prefix: '/auth'
 })
 
 router.post('/register', async (ctx) => {
-    const { account, password } = ctx.request.body;
+    const { account, password, inviteCode } = getBody(ctx);
     const user = new User({
         account,
         password,
@@ -17,6 +20,12 @@ router.post('/register', async (ctx) => {
     const one = await User.findOne({
         account
     }).exec();
+
+    const findCode = await InviteCode.findOne({
+        code: inviteCode
+    }).exec();
+
+    console.log('findCode=>', findCode)
 
     // console.log(await User.find())
 
@@ -29,7 +38,30 @@ router.post('/register', async (ctx) => {
         return;
     }
 
+    if (!findCode) {
+        ctx.body = {
+            code: 0,
+            msg: "注册失败 邀请码错误"
+        }
+        return;
+    }
+    if (findCode.user) {
+        ctx.body = {
+            code: 0,
+            msg: "注册失败 邀请码已使用过",
+        }
+        return;
+    }
+
     const result = await user.save();
+
+
+    //更新已发放邀请码的用户id
+    findCode.user = result._id;
+    findCode.meta.updateAt = new Date().getTime();
+
+    await findCode.save();
+
     ctx.body = {
         code: 1,
         msg: "注册成功",
@@ -38,15 +70,11 @@ router.post('/register', async (ctx) => {
 })
 
 router.post('/login', async (ctx) => {
-    const { account, password } = ctx.request.body;
-
-    console.log('account=>', account);
+    const { account, password } = getBody(ctx);
 
     const user = await User.findOne({
         account,
     }).exec();
-
-    console.log('user=>', user)
 
     if (!user) {
         ctx.body = {
@@ -54,14 +82,24 @@ router.post('/login', async (ctx) => {
             msg: '登陆失败 用户名找不到',
             data: null,
         }
-
         return;
     }
+
     if (user.password == password) {
         ctx.body = {
             code: 1,
             msg: "登陆成功",
-            data: user
+            data: {
+                user: {
+                    // account: user.account,
+                    account: user['account'],
+                    _id: user._id,
+                },
+                token: jwt.sign({
+                    account: user.account,
+                    _id: user._id,
+                }, 'book-mgr')
+            }
         }
     } else {
         ctx.body = {
